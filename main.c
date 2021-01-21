@@ -74,16 +74,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 }
 
-//void temp(struct UART uart, UART_HandleTypeDef *huart){
-//	if(uart.checked_rx[0] != 0 && uart.trans_count >= 400){
-//		for(int i = 0; i < uart.rx_length; i++){
-//			if(uart.checked_rx[i] != 0) break;
-//			if(i == uart.rx_length - 1) HAL_UART_DeInit(&huart1);
-//		}
-//	}
-//	HAL_UART_Init(&huart1);
-//}
-
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	p++;
@@ -106,12 +96,12 @@ void Set_Transmit_Uart(struct UART *uart, int32_t *transmit)
 	}
 }
 
-//void Set_Command_Uart(int32_t *originData, struct UART uart)
-//{
-//	for(int len = 0; len < uart.rx_length; len++){
-//		originData[len] = uart.checked_rx[len];
-//	}
-//}
+void Set_Command_Uart(int32_t *originData, struct UART uart)
+{
+	for(int len = 0; len < uart.rx_length; len++){
+		originData[len] = uart.checked_rx[len];
+	}
+}
 
 /* USER CODE END 0 */
 
@@ -158,7 +148,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		// temp(eurobot2019.hardware.uartRPI, &huart1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

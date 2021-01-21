@@ -12,50 +12,6 @@
 #include "crc.h"
 #include "usart.h"
 
-//---------------------------------------------------------------------------
-/*
-struct MONSTERMOTOR
-{
- GPIO_TypeDef    *Cw_port;
- uint16_t      Cw_pin;
- GPIO_TypeDef    *Ccw_port;
- uint16_t      Ccw_pin;
- TIM_HandleTypeDef *Timer;
- uint32_t      Channel;
-};
-void MonsterMotor_Init(struct MONSTERMOTOR* motor);
-void MonsterMotor_Write(struct MONSTERMOTOR* motor, double duty);
-void MonsterMotor_Stop(struct MONSTERMOTOR* motor);
-*/
-//---------------------------------------------------------------------------
-/*
-struct ENCODER
-{
- TIM_HandleTypeDef *Timer;
- uint32_t      Channel1;
- uint32_t      Channel2;
- double      Radius;
- double      ReductionRatio;
- double       Resolution;
- short       Direction;     // +1 or -1
-};
-void Encoder_Init_16bit(struct ENCODER *encoder);
-void Encoder_Init_32bit(struct ENCODER *encoder);
-unsigned int Encoder_Read(struct ENCODER *encoder);
-*/
-
-
-//---------------------------------------------------------------------------
-/*
-struct SWITCH
-{
- GPIO_TypeDef   *port;
- uint16_t    pin;
-};
-short Switch_Read(struct SWITCH sw);    // 1 short(on), 0 open(off)
-*/
-
-//---------------------------------------------------------------------------
 struct UART
 {
  UART_HandleTypeDef  *huart;
@@ -79,13 +35,6 @@ void Uart_RxCplt(UART_HandleTypeDef *huart, struct UART *uart);
 //---------------------------------------------------------------------------
 struct HARDWARE
 {
-// struct MONSTERMOTOR  motorR;
-// struct MONSTERMOTOR  motorL;
-// struct ENCODER    encoderIR;
-// struct ENCODER    encoderIL;
-// struct ENCODER    encoderOR;
-// struct ENCODER    encoderOL;
-// struct SWITCH    switchReposition;
  struct UART    uartRPI;
 };
 void Hardware_Init(struct HARDWARE *hardware);
