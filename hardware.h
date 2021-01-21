@@ -59,15 +59,16 @@ short Switch_Read(struct SWITCH sw);    // 1 short(on), 0 open(off)
 struct UART
 {
  UART_HandleTypeDef  *huart;
- uint8_t    tx_length, rx_length, start, reset_check, flag, single_count;   // count as 32-bits, without crc
+ uint8_t    tx_length, rx_length, start, flag, single_count, reset_count;   // count as 32-bits, without crc
  uint32_t   trans_count, recev_count, error_count;
+ int8_t   reset_check;
  double    recev_suc_rate;
  volatile int32_t tx[20];
  volatile int32_t rx[20];
  volatile int32_t buf[20];
  volatile int32_t checked_rx[20];
- int                 shift;
- int32_t            rx_single;
+ volatile int32_t    rx_single[2];
+ volatile int32_t    rx_temp[4];
 };
 void Uart_Transmit(struct UART* uart);
 void Uart_Rate_Count(struct UART* uart);

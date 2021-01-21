@@ -74,22 +74,22 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 }
 
-void temp(struct UART uart, UART_HandleTypeDef *huart){
-	if(uart.checked_rx[0] != 0 && uart.trans_count >= 400){
-		for(int i = 0; i < uart.rx_length; i++){
-			if(uart.checked_rx[i] != 0) break;
-			if(i == uart.rx_length - 1) HAL_UART_DeInit(&huart1);
-		}
-	}
-	HAL_UART_Init(&huart1);
-}
+//void temp(struct UART uart, UART_HandleTypeDef *huart){
+//	if(uart.checked_rx[0] != 0 && uart.trans_count >= 400){
+//		for(int i = 0; i < uart.rx_length; i++){
+//			if(uart.checked_rx[i] != 0) break;
+//			if(i == uart.rx_length - 1) HAL_UART_DeInit(&huart1);
+//		}
+//	}
+//	HAL_UART_Init(&huart1);
+//}
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	//p++;
+	p++;
 	if (huart == &huart1){
 		Uart_RxCplt(huart, &eurobot2019.hardware.uartRPI);
-		Set_Command_Uart(originData, eurobot2019.hardware.uartRPI);
+//		Set_Command_Uart(originData, eurobot2019.hardware.uartRPI);
 	}
 }
 
@@ -101,18 +101,17 @@ void Set_Transmit_Uart(struct UART *uart, int32_t *transmit)
 		uart->tx[len] = transmit[len];
 	}
 	if(uart->tx[uart->tx_length + 1] == 255){
-		uart->start = 1;
-		HAL_UART_Receive_DMA(uart->huart, (uint8_t *)uart->rx, 4*(uart->rx_length)+8);
+		HAL_UART_Receive_DMA(uart->huart, (uint8_t *)uart->rx_single, 4);
 		uart->tx[uart->tx_length + 1] = 0;
 	}
 }
 
-void Set_Command_Uart(int32_t *originData, struct UART uart)
-{
-	for(int len = 0; len < uart.rx_length; len++){
-		originData[len] = uart.checked_rx[len];
-	}
-}
+//void Set_Command_Uart(int32_t *originData, struct UART uart)
+//{
+//	for(int len = 0; len < uart.rx_length; len++){
+//		originData[len] = uart.checked_rx[len];
+//	}
+//}
 
 /* USER CODE END 0 */
 
@@ -125,7 +124,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
+
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -249,3 +248,4 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
