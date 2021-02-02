@@ -29,6 +29,7 @@ void Uart_Transmit(struct UART* uart)
 	uart->tx[uart->tx_length] = HAL_CRC_Calculate(&hcrc, (uint32_t *)uart->tx, uart->tx_length);
 	HAL_UART_Transmit_DMA(uart->huart, (uint8_t *)uart->tx, 4*(uart->tx_length)+12);
 	uart->trans_count ++;
+	uart->stuck_count ++;
 	if(uart->stuck_count >= 200 && p == 0){
 		HAL_UART_AbortReceive(uart->huart);
 		p = 0;
