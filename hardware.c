@@ -14,13 +14,12 @@ void Hardware_Init(struct HARDWARE *hardware)
 void Hardware_Mapping(struct HARDWARE *hardware)
 {
 	hardware->uartRPI.huart = &huart1;
-	hardware->uartRPI.tx_length = 6;
-	hardware->uartRPI.rx_length = 6;
+	hardware->uartRPI.tx_length = 6;  // changeable
+	hardware->uartRPI.rx_length = 6;  // changeable
 	hardware->uartRPI.trans_count = 0;
 	hardware->uartRPI.recev_count = 0;
 	hardware->uartRPI.error_count = 0;
-	hardware->uartRPI.start = 1;
-	hardware->uartRPI.tx[hardware->uartRPI.tx_length + 2] = 0x3F3E0000 ;  //0x0A000000; // '\n\0\0\0'
+	hardware->uartRPI.tx[hardware->uartRPI.tx_length + 2] = 0x3F3E0000; // to represent end of transmission for ROS
 	hardware->uartRPI.tx[hardware->uartRPI.tx_length + 1] = 0; // flag
 }
 

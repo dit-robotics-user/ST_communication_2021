@@ -50,10 +50,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-struct ROBOT eurobot2019;
+struct ROBOT eurobot2021;
 int32_t originData[6] = {0}; // ST + effective data*5
 int32_t transmit[6] = {0}; // ST + effective data*5
 int p=0;
+/* p is used to solve frame error(check if "HAL_UART_RxCpltCallback" is called) */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -68,9 +69,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if(htim == &htim6) // 200Hz
 	{
-		Set_Transmit_Uart(&eurobot2019.hardware.uartRPI, transmit);
-		Uart_Transmit(&eurobot2019.hardware.uartRPI);
-		//  Uart_Rate_Count(&eurobot2019.hardware.uartRPI);
+		Set_Transmit_Uart(&eurobot2021.hardware.uartRPI, transmit);
+		Uart_Transmit(&eurobot2021.hardware.uartRPI);
+		//  Uart_Rate_Count(&eurobot2021.hardware.uartRPI);
 	}
 }
 
@@ -78,8 +79,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	p++;
 	if (huart == &huart1){
-		Uart_RxCplt(huart, &eurobot2019.hardware.uartRPI);
-//		Set_Command_Uart(originData, eurobot2019.hardware.uartRPI);
+		Uart_RxCplt(huart, &eurobot2021.hardware.uartRPI);
+//		Set_Command_Uart(originData, eurobot2021.hardware.uartRPI);
 	}
 }
 
@@ -139,7 +140,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_CRC_Init();
   /* USER CODE BEGIN 2 */
-	Hardware_Init(&eurobot2019.hardware);
+	Hardware_Init(&eurobot2021.hardware);
 //	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_Base_Start_IT(&htim6);
   /* USER CODE END 2 */
