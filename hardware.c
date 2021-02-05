@@ -6,7 +6,7 @@ void Hardware_Init(struct HARDWARE *hardware)
 {
 	Hardware_Mapping(hardware);
 	HAL_UART_Receive_DMA(hardware->uartRPI.huart, (uint8_t *)hardware->uartRPI.rx_single, 4);
-	hardware->uartRPI.flag = 0;
+	hardware->uartRPI.one_or_block = 0;
 	hardware->uartRPI.single_count = 0;
 	hardware->uartRPI.reset_count = 0;
 }
@@ -66,7 +66,7 @@ void Uart_RxCplt(UART_HandleTypeDef *huart, struct UART* uart)
 {
 	if(huart == uart->huart){
 		uart->recev_count ++;
-		if(uart->flag == 0){
+		if(uart->one_or_block == 0){
 			if(uart->single_count == 0 && uart->rx_single[0] != 0x31 && uart->reset_count < 20){
 				uart->error_count ++;
 				uart->reset_count ++;
@@ -88,7 +88,7 @@ void Uart_RxCplt(UART_HandleTypeDef *huart, struct UART* uart)
 					p = 0;
 					uart->stuck_count = 0;
 					HAL_UART_Receive_DMA(uart->huart, (uint8_t *)uart->rx, 4*(uart->rx_length)+4);
-					uart->flag = 1;
+					uart->one_or_block = 1;
 				}
 				else{
 					uart->error_count ++;
@@ -96,9 +96,9 @@ void Uart_RxCplt(UART_HandleTypeDef *huart, struct UART* uart)
 			}
 			else uart->single_count++;
 		}
-		else if(uart->flag == 1){
+		else if(uart->one_or_block == 1){
 			if(!Uart_Crc_Check(uart)){
-				uart->flag = 0;
+				uart->one_or_block = 0;
 				HAL_UART_AbortReceive(uart->huart);
 				p = 0;
 				uart->stuck_count = 0;
