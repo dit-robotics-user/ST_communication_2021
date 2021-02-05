@@ -15,7 +15,7 @@
 struct UART
 {
  UART_HandleTypeDef  *huart;
- uint8_t    tx_length, rx_length, start, flag, single_count, reset_count;   // count as 32-bits, without crc
+ uint8_t    tx_length, rx_length, start, one_or_block, single_count, reset_count;   // count as 32-bits, without crc
  uint32_t   trans_count, recev_count, error_count, stuck_count;
  int8_t   reset_check;
  double    recev_suc_rate;
