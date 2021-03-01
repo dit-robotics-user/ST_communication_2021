@@ -54,6 +54,7 @@ struct ROBOT eurobot2021;
 int32_t originData[6] = {0}; // ST + effective data*5
 int32_t transmit[6] = {0}; // ST + effective data*5
 int p=0;
+int v=0;
 /* p is used to solve frame error(check if "HAL_UART_RxCpltCallback" is called) */
 /* USER CODE END PV */
 
@@ -73,10 +74,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		Uart_Transmit(&eurobot2021.hardware.uartRPI);
 		//  Uart_Rate_Count(&eurobot2021.hardware.uartRPI);
 	}
+	if(htim == &htim3)
+	{
+		if(v < p){
+			v = p;
+		}
+		else if(v == p){
+			eurobot2021.hardware.uartRPI.stuck_count ++;
+		}
+		if(eurobot2021.hardware.uartRPI.stuck_count > 10){
+			HAL_UART_AbortReceive(eurobot2021.hardware.uartRPI.huart);
+			eurobot2021.hardware.uartRPI.stuck_count = 0;
+			eurobot2021.hardware.uartRPI.one_or_block = 0;
+			HAL_UART_Receive_DMA(eurobot2021.hardware.uartRPI.huart, (uint8_t *)eurobot2021.hardware.uartRPI.rx_single, 4);
+		}
+	}
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
+	v=p;
 	p++;
 	if (huart == &huart1){
 		Uart_RxCplt(huart, &eurobot2021.hardware.uartRPI);
@@ -116,7 +133,6 @@ int main(void)
 
   /* USER CODE END 1 */
 
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -139,10 +155,13 @@ int main(void)
   MX_TIM6_Init();
   MX_USART1_UART_Init();
   MX_CRC_Init();
+  MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	Hardware_Init(&eurobot2021.hardware);
 //	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_Base_Start_IT(&htim6);
+	HAL_TIM_Base_Start_IT(&htim3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -238,4 +257,3 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

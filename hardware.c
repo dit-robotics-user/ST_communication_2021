@@ -1,6 +1,7 @@
 #include "hardware.h"
 
 extern int p;
+extern int v;
 
 void Hardware_Init(struct HARDWARE *hardware)
 {
@@ -28,14 +29,6 @@ void Uart_Transmit(struct UART* uart)
 	uart->tx[uart->tx_length] = HAL_CRC_Calculate(&hcrc, (uint32_t *)uart->tx, uart->tx_length);
 	HAL_UART_Transmit_DMA(uart->huart, (uint8_t *)uart->tx, 4*(uart->tx_length)+12);
 	uart->trans_count ++;
-	uart->stuck_count ++;
-	if(uart->stuck_count >= 200 && p == 0){
-		HAL_UART_AbortReceive(uart->huart);
-		p = 0;
-		uart->stuck_count = 0;
-		HAL_UART_Receive_DMA(uart->huart, (uint8_t *)uart->rx_single, 4);
-	}
-
 }
 
 void Uart_Rate_Count(struct UART* uart)
@@ -76,8 +69,6 @@ void Uart_RxCplt(UART_HandleTypeDef *huart, struct UART* uart)
 				uart->reset_count = 0;
 				HAL_UART_AbortReceive(uart->huart);
 				uart->tx[uart->tx_length + 1] = 255;
-				p = 0;
-				uart->stuck_count = 0;
 				return;
 			}
 			uart->rx[uart->single_count] = uart->rx_single[0];
@@ -85,8 +76,6 @@ void Uart_RxCplt(UART_HandleTypeDef *huart, struct UART* uart)
 				uart->single_count = 0;
 				if(Uart_Crc_Check(uart)){
 					HAL_UART_AbortReceive(uart->huart);
-					p = 0;
-					uart->stuck_count = 0;
 					HAL_UART_Receive_DMA(uart->huart, (uint8_t *)uart->rx, 4*(uart->rx_length)+4);
 					uart->one_or_block = 1;
 				}
@@ -100,8 +89,6 @@ void Uart_RxCplt(UART_HandleTypeDef *huart, struct UART* uart)
 			if(!Uart_Crc_Check(uart)){
 				uart->one_or_block = 0;
 				HAL_UART_AbortReceive(uart->huart);
-				p = 0;
-				uart->stuck_count = 0;
 				HAL_UART_Receive_DMA(uart->huart, (uint8_t *)uart->rx_single, 4);
 				uart->error_count ++;
 			}
