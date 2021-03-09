@@ -15,8 +15,10 @@ void Hardware_Init(struct HARDWARE *hardware)
 void Hardware_Mapping(struct HARDWARE *hardware)
 {
 	hardware->uartRPI.huart = &huart1;
-	hardware->uartRPI.tx_length = 6;  // changeable
-	hardware->uartRPI.rx_length = 6;  // changeable
+	hardware->uartRPI.real_tx_length = 5;  // changeable
+	hardware->uartRPI.real_rx_length = 5;  // changeable
+	hardware->uartRPI.tx_length = hardware->uartRPI.real_tx_length + 1;
+	hardware->uartRPI.rx_length = hardware->uartRPI.real_rx_length + 1;
 	hardware->uartRPI.trans_count = 0;
 	hardware->uartRPI.recev_count = 0;
 	hardware->uartRPI.error_count = 0;
